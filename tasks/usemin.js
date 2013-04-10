@@ -171,16 +171,17 @@ module.exports = function (grunt) {
               var task = requirejs[i];
               var options = task.options;
               if (options) {
-                options.name = options.name || block.requirejs.name;
-                options.out = options.out || block.requirejs.dest;
+                options.modules = options.modules || block.requirejs.modules || [];
+                options.modules.push({ name: options.name || block.requirejs.name })
+                options.dir = options.dir || block.requirejs.dest;
                 options.baseUrl = options.baseUrl || block.requirejs.baseUrl;
-                options.mainConfigFile = path.join(options.baseUrl, options.name) + '.js';
+                options.mainConfigFile = options.mainConfigFile || path.join(options.baseUrl, options.name) + '.js';
               } else {
                 task.options = {
-                  name: block.requirejs.name,
-                  out: block.requirejs.dest,
+                  dir: block.requirejs.dest,
                   baseUrl: block.requirejs.baseUrl,
-                  mainConfigFile: path.join(block.requirejs.baseUrl, block.requirejs.name) + '.js'
+                  mainConfigFile: path.join(block.requirejs.baseUrl, block.requirejs.name) + '.js',
+                  modules: [{ name: block.requirejs.name }]
                 };
               }
             }
@@ -188,9 +189,9 @@ module.exports = function (grunt) {
           if (!hasTasks) {
             requirejs.default = {
               options: {
-                name: block.requirejs.name,
-                out: block.requirejs.dest,
-                baseUrl: block.requirejs.baseUrl
+                dir: block.requirejs.dest,
+                baseUrl: block.requirejs.baseUrl,
+                modules: [{ name: block.requirejs.name }]
               }
             };
           }
